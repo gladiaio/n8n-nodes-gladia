@@ -36,7 +36,7 @@ export class GladiaApi implements ICredentialType {
 	test: ICredentialTestRequest = {
 		request: {
 			baseURL: 'https://api.gladia.io',
-			url: '/v2/health',
+			url: '/v2/pre-recorded?limit=1',
 		},
 	};
 }
