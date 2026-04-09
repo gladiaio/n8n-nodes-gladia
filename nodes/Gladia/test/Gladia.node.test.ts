@@ -58,7 +58,7 @@ describe('Gladia Node', () => {
 					resource: 'transcription',
 					operation: 'transcribe',
 					audioSource: 'url',
-					audioUrl: 'https://example.com/audio.mp3',
+					audioUrl: 'http://files.gladia.io/example/audio-transcription/split_infinity.wav',
 					waitForCompletion: false,
 					options: {},
 				};
@@ -73,7 +73,7 @@ describe('Gladia Node', () => {
 			const result = await node.execute.call(executeFunctions);
 
 			expect(gladiaApiRequestSpy).toHaveBeenCalledWith('POST', '/v2/transcription', {
-				audio_url: 'https://example.com/audio.mp3',
+				audio_url: 'http://files.gladia.io/example/audio-transcription/split_infinity.wav',
 			});
 			expect(result).toEqual([
 				[
@@ -95,7 +95,7 @@ describe('Gladia Node', () => {
 					resource: 'transcription',
 					operation: 'transcribe',
 					audioSource: 'url',
-					audioUrl: 'https://example.com/audio.mp3',
+					audioUrl: 'http://files.gladia.io/example/audio-transcription/split_infinity.wav',
 					waitForCompletion: true,
 					options: { pollingInterval: 1, pollingTimeout: 30 },
 				};
@@ -130,7 +130,7 @@ describe('Gladia Node', () => {
 					resource: 'transcription',
 					operation: 'transcribe',
 					audioSource: 'url',
-					audioUrl: 'https://example.com/audio.mp3',
+					audioUrl: 'http://files.gladia.io/example/audio-transcription/split_infinity.wav',
 					waitForCompletion: true,
 					options: { pollingInterval: 1, pollingTimeout: 30 },
 				};
@@ -202,11 +202,10 @@ describe('Gladia Node', () => {
 					resource: 'transcription',
 					operation: 'transcribe',
 					audioSource: 'url',
-					audioUrl: 'https://example.com/audio.mp3',
+					audioUrl: 'http://files.gladia.io/example/audio-transcription/split_infinity.wav',
 					waitForCompletion: false,
 					options: {
-						language: 'en',
-						detect_language: true,
+						languages: 'en',
 						diarization: true,
 						diarization_min_speakers: 2,
 						diarization_max_speakers: 5,
@@ -218,7 +217,6 @@ describe('Gladia Node', () => {
 						sentiment_analysis: true,
 						named_entity_recognition: true,
 						enable_code_switching: true,
-						context_prompt: 'A meeting about AI',
 						custom_vocabulary: 'n8n, LangChain, GPT-4',
 					},
 				};
@@ -230,9 +228,8 @@ describe('Gladia Node', () => {
 			await node.execute.call(executeFunctions);
 
 			expect(gladiaApiRequestSpy).toHaveBeenCalledWith('POST', '/v2/transcription', {
-				audio_url: 'https://example.com/audio.mp3',
-				language: 'en',
-				detect_language: true,
+				audio_url: 'http://files.gladia.io/example/audio-transcription/split_infinity.wav',
+				language_config: { languages: ['en'], code_switching: true },
 				diarization: true,
 				diarization_config: { min_speakers: 2, max_speakers: 5 },
 				subtitles: true,
@@ -242,8 +239,6 @@ describe('Gladia Node', () => {
 				summarization: true,
 				sentiment_analysis: true,
 				named_entity_recognition: true,
-				enable_code_switching: true,
-				context_prompt: 'A meeting about AI',
 				custom_vocabulary: ['n8n', 'LangChain', 'GPT-4'],
 			});
 		});
@@ -257,7 +252,7 @@ describe('Gladia Node', () => {
 					resource: 'transcription',
 					operation: 'transcribe',
 					audioSource: 'url',
-					audioUrl: 'https://example.com/audio.mp3',
+					audioUrl: 'http://files.gladia.io/example/audio-transcription/split_infinity.wav',
 					waitForCompletion: false,
 					options: {},
 				};
@@ -280,7 +275,7 @@ describe('Gladia Node', () => {
 					resource: 'transcription',
 					operation: 'transcribe',
 					audioSource: 'url',
-					audioUrl: 'https://example.com/audio.mp3',
+					audioUrl: 'http://files.gladia.io/example/audio-transcription/split_infinity.wav',
 					waitForCompletion: true,
 					options: { pollingInterval: 1, pollingTimeout: 30 },
 				};
