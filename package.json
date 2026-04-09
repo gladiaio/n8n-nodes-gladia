@@ -1,5 +1,5 @@
 {
-	"name": "@gladiaio/n8n-nodes-gladia",
+	"name": "n8n-nodes-gladia",
 	"version": "0.1.0",
 	"description": "Gladia Speech to Text Node",
 	"license": "MIT",
