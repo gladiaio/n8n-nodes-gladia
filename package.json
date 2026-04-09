@@ -5,7 +5,21 @@
 	"license": "MIT",
 	"homepage": "",
 	"keywords": [
-		"n8n-community-node-package"
+		"n8n-community-node-package",
+		"gladia",
+		"speech-to-text",
+		"transcription",
+		"audio",
+		"audio-transcription",
+		"asr",
+		"automatic-speech-recognition",
+		"ai",
+		"translation",
+		"subtitles",
+		"captions",
+		"real-time",
+		"voice",
+		"multilingual"
 	],
 	"author": {
 		"name": "Gladia",
