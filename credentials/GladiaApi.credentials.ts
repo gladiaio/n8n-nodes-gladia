@@ -10,7 +10,7 @@ export class GladiaApi implements ICredentialType {
 
 	displayName = 'Gladia API';
 
-	icon = { light: 'file:../icons/gladia.svg', dark: 'file:../icons/gladia.dark.svg' } as const;
+	icon = { light: 'file:../nodes/Gladia/gladia.svg', dark: 'file:../nodes/Gladia/gladia.dark.svg' } as const;
 
 	documentationUrl = 'https://docs.gladia.io/reference/getting-your-api-key';
 

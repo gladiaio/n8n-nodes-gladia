@@ -14,7 +14,7 @@ export class Gladia implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Gladia',
 		name: 'gladia',
-		icon: { light: 'file:../../icons/gladia.svg', dark: 'file:../../icons/gladia.dark.svg' },
+		icon: { light: 'file:gladia.svg', dark: 'file:gladia.dark.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
