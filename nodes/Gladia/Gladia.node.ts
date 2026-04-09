@@ -197,7 +197,8 @@ export class Gladia implements INodeType {
 						name: 'languages',
 						type: 'string',
 						default: '',
-						description: 'Language code (e.g. "en", "fr", "de"). Leave empty for auto-detection.',
+						description:
+							'Language code (e.g. en, fr, de), separated by commas. Leave empty for auto-detection.',
 					},
 					{
 						displayName: 'Model',
