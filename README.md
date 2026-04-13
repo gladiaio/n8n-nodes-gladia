@@ -71,18 +71,6 @@ Supported options:
 2. Set **Audio Source** to `Binary Data` and enter the binary field name (default: `data`).
 3. The node will upload the file to Gladia and then start transcription.
 
-## Publishing a new release
-
-Releases are published to npm automatically when a version tag is pushed to GitHub.
-
-1. Go to the repository on GitHub → **Releases** → **Draft a new release**.
-2. Click **Choose a tag**, type a new tag following the format `v1.2.3`, and select **Create new tag on publish**.
-3. Click **Publish release**.
-
-The CD pipeline will trigger automatically: it runs lint, build, and tests, then publishes the package to npm.
-
-> **Note:** An `NPM_TOKEN` secret must be configured in **Settings** → **Secrets and variables** → **Actions**.
-
 ## Resources
 
 - [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
