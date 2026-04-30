@@ -82,6 +82,7 @@ describe('Gladia Node', () => {
 							id: 'txn-123',
 							result_url: 'https://api.gladia.io/v2/transcription/txn-123',
 						},
+						pairedItem: { item: 0 },
 					},
 				],
 			]);

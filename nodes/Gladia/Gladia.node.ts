@@ -71,12 +71,12 @@ export class Gladia implements INodeType {
 				type: 'options',
 				options: [
 					{
-						name: 'URL',
-						value: 'url',
-					},
-					{
 						name: 'Binary Data',
 						value: 'binaryData',
+					},
+					{
+						name: 'URL',
+						value: 'url',
 					},
 				],
 				default: 'url',
@@ -438,7 +438,7 @@ export class Gladia implements INodeType {
 					const initResponse = await gladiaApiRequest.call(this, 'POST', '/v2/transcription', body);
 
 					if (!waitForCompletion) {
-						returnData.push({ json: initResponse });
+						returnData.push({ json: initResponse, pairedItem: { item: i } });
 						continue;
 					}
 
@@ -505,7 +505,7 @@ export class Gladia implements INodeType {
 						);
 					}
 
-					returnData.push({ json: result });
+					returnData.push({ json: result, pairedItem: { item: i } });
 				}
 			} catch (error) {
 				if (this.continueOnFail()) {
