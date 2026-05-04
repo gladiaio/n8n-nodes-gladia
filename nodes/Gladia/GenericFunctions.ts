@@ -49,8 +49,6 @@ export async function gladiaApiUpload(
 	fileName: string,
 	mimeType: string,
 ): Promise<JsonObject> {
-	const credentials = await this.getCredentials('gladiaApi');
-
 	const form = new FormData();
 	form.append('audio', new Blob([buffer], { type: mimeType }), fileName);
 
@@ -58,12 +56,13 @@ export async function gladiaApiUpload(
 		method: 'POST',
 		url: `${BASE_URL}/v2/upload`,
 		body: form,
-		headers: {
-			'x-gladia-key': credentials.apiKey as string,
-		},
 	};
 
-	const response = await this.helpers.httpRequest(options);
+	const response = await this.helpers.httpRequestWithAuthentication.call(
+		this,
+		'gladiaApi',
+		options,
+	);
 
 	if (typeof response === 'string') {
 		try {
