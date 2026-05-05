@@ -37,6 +37,7 @@ Then restart your n8n instance. The node will be picked up automatically.
 - **Transcribe** — Submit an audio file (via URL or binary data) for transcription and optionally wait for the result.
 
 Supported options:
+
 - Language detection (auto or specified)
 - Code switching (multi-language audio)
 - Speaker diarization (with min/max speaker count)
@@ -54,19 +55,16 @@ Supported options:
 2. In n8n, go to **Credentials** → **New** → search for **Gladia API**.
 3. Paste your API key into the **API Key** field.
 
-## Compatibility
-
-- Tested against n8n `1.x`
-- Minimum recommended n8n version: `1.0.0`
-
 ## Usage
 
 **Transcribe from URL:**
+
 1. Add the Gladia node to your workflow.
 2. Set **Audio Source** to `URL` and provide a publicly accessible audio URL.
 3. Enable **Wait for Completion** to receive the full transcript in the output, or disable it to get the transcription ID immediately and poll manually.
 
 **Transcribe from binary data:**
+
 1. Pipe a binary file (e.g. from an HTTP Request or Read Binary File node) into the Gladia node.
 2. Set **Audio Source** to `Binary Data` and enter the binary field name (default: `data`).
 3. The node will upload the file to Gladia and then start transcription.

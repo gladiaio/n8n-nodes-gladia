@@ -5,6 +5,7 @@ import type {
 	JsonObject,
 } from 'n8n-workflow';
 import { NodeApiError } from 'n8n-workflow';
+import { version as packageVersion } from '../../package.json';
 
 const BASE_URL = 'https://api.gladia.io';
 
@@ -22,8 +23,28 @@ export async function gladiaApiRequest(
 		headers,
 	};
 
-	if (method !== 'GET' && Object.keys(body).length > 0) {
-		options.body = body as JsonObject;
+	if (method !== 'GET') {
+		const requestBody = { ...(body as Record<string, unknown>) };
+		const shouldAddVersionMetadata =
+			method === 'POST' && ['/v2/pre-recorded', '/v2/transcription'].includes(endpoint);
+
+		if (shouldAddVersionMetadata) {
+			const existingMetadata =
+				typeof requestBody.custom_metadata === 'object' &&
+				requestBody.custom_metadata !== null &&
+				!Array.isArray(requestBody.custom_metadata)
+					? (requestBody.custom_metadata as Record<string, unknown>)
+					: {};
+
+			requestBody.custom_metadata = {
+				...existingMetadata,
+				n8n: packageVersion,
+			};
+		}
+
+		if (Object.keys(requestBody).length > 0) {
+			options.body = requestBody as JsonObject;
+		}
 	}
 
 	const response = await this.helpers.httpRequestWithAuthentication.call(
