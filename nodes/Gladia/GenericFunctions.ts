@@ -20,28 +20,11 @@ export async function gladiaApiRequest(
 		method,
 		url: `${BASE_URL}${endpoint}`,
 		json: true,
-		headers,
+		headers: { 'x-gladia-version': `n8n-nodes/${packageVersion}`, ...headers },
 	};
 
 	if (method !== 'GET') {
 		const requestBody = { ...(body as Record<string, unknown>) };
-		const shouldAddVersionMetadata =
-			method === 'POST' && ['/v2/pre-recorded', '/v2/transcription'].includes(endpoint);
-
-		if (shouldAddVersionMetadata) {
-			const existingMetadata =
-				typeof requestBody.custom_metadata === 'object' &&
-				requestBody.custom_metadata !== null &&
-				!Array.isArray(requestBody.custom_metadata)
-					? (requestBody.custom_metadata as Record<string, unknown>)
-					: {};
-
-			requestBody.custom_metadata = {
-				...existingMetadata,
-				n8n: packageVersion,
-			};
-		}
-
 		if (Object.keys(requestBody).length > 0) {
 			options.body = requestBody as JsonObject;
 		}
@@ -77,6 +60,7 @@ export async function gladiaApiUpload(
 		method: 'POST',
 		url: `${BASE_URL}/v2/upload`,
 		body: form,
+		headers: { 'x-gladia-version': `n8n-nodes/${packageVersion}` },
 	};
 
 	const response = await this.helpers.httpRequestWithAuthentication.call(
