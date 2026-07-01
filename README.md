@@ -14,7 +14,7 @@ This is an n8n community node. It lets you use **Gladia** in your n8n workflows.
 
 1. Open your n8n instance and go to **Settings** → **Community Nodes**.
 2. Click **Install a community node**.
-3. Enter `@gladiaio/n8n-nodes` in the search field and select it.
+3. Enter `@gladiaio/n8n-nodes-gladia` in the search field and select it.
 4. Click **Install** and wait for the installation to complete.
 5. The Gladia node will be available in the nodes panel under **Gladia**.
 
@@ -25,7 +25,7 @@ This is an n8n community node. It lets you use **Gladia** in your n8n workflows.
 If you manage your n8n instance manually, you can install the package directly:
 
 ```bash
-npm install @gladiaio/n8n-nodes
+npm install @gladiaio/n8n-nodes-gladia
 ```
 
 Then restart your n8n instance. The node will be picked up automatically.

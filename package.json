@@ -1,9 +1,16 @@
 {
-	"name": "@gladiaio/n8n-nodes",
+	"name": "@gladiaio/n8n-nodes-gladia",
 	"version": "0.1.0",
 	"description": "Gladia Speech to Text Node",
 	"license": "MIT",
-	"homepage": "",
+	"homepage": "https://github.com/gladiaio/n8n-nodes-gladia#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/gladiaio/n8n-nodes-gladia.git"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"keywords": [
 		"n8n-community-node-package",
 		"gladia",
@@ -50,6 +57,9 @@
 	"jest": {
 		"preset": "ts-jest",
 		"testEnvironment": "node",
+		"modulePathIgnorePatterns": [
+			"<rootDir>/dist/"
+		],
 		"testMatch": [
 			"**/test/**/*.test.ts"
 		],
