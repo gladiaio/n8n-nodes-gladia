@@ -36,8 +36,8 @@
 		"build": "n8n-node build",
 		"build:watch": "tsc --watch",
 		"dev": "n8n-node dev",
-		"lint": "n8n-node lint",
-		"lint:fix": "n8n-node lint --fix",
+		"lint": "node scripts/run-without-overrides.mjs n8n-node lint",
+		"lint:fix": "node scripts/run-without-overrides.mjs n8n-node lint --fix",
 		"release": "n8n-node release",
 		"strip-overrides": "node scripts/strip-overrides.mjs",
 		"test": "jest"
