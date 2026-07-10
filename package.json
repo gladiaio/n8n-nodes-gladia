@@ -39,6 +39,7 @@
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
 		"release": "n8n-node release",
+		"strip-overrides": "node scripts/strip-overrides.mjs",
 		"test": "jest"
 	},
 	"files": [
