@@ -1,14 +1,29 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const packageJsonPath = path.resolve(process.cwd(), 'package.json');
-const pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+const packageJsonPaths = ['package.json', 'dist/package.json'].map((file) =>
+	path.resolve(process.cwd(), file),
+);
 
-if (!('overrides' in pkg)) {
-	console.log('No overrides field to strip.');
-	process.exit(0);
+let stripped = 0;
+
+for (const packageJsonPath of packageJsonPaths) {
+	if (!fs.existsSync(packageJsonPath)) {
+		continue;
+	}
+
+	const pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
+	if (!('overrides' in pkg)) {
+		continue;
+	}
+
+	delete pkg.overrides;
+	fs.writeFileSync(packageJsonPath, `${JSON.stringify(pkg, null, '\t')}\n`);
+	console.log(`Stripped overrides from ${path.relative(process.cwd(), packageJsonPath)}.`);
+	stripped++;
 }
 
-delete pkg.overrides;
-fs.writeFileSync(packageJsonPath, `${JSON.stringify(pkg, null, '\t')}\n`);
-console.log('Stripped overrides from package.json.');
+if (stripped === 0) {
+	console.log('No overrides field to strip.');
+}
