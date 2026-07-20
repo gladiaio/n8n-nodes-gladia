@@ -1,6 +1,6 @@
 {
 	"name": "@gladiaio/n8n-nodes-gladia",
-	"version": "0.1.0",
+	"version": "0.1.6",
 	"description": "Gladia Speech to Text Node",
 	"license": "MIT",
 	"homepage": "https://github.com/gladiaio/n8n-nodes-gladia#readme",
