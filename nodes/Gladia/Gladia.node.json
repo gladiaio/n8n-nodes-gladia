@@ -1,5 +1,5 @@
 {
-	"node": "n8n-nodes-gladia.gladia",
+	"node": "@gladiaio/n8n-nodes-gladia.gladia",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
 	"categories": ["Utility"],
