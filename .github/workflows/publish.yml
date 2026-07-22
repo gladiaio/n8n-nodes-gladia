@@ -158,7 +158,9 @@ jobs:
 
       - name: Create release tag
         run: |
-          if git rev-parse "$RELEASE_TAG^{commit}" >/dev/null 2>&1; then
+          if git ls-remote --exit-code --tags origin "refs/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+            git fetch origin "refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG"
+
             if [ "$(git rev-parse "$RELEASE_TAG^{commit}")" != "$(git rev-parse HEAD)" ]; then
               echo "Tag $RELEASE_TAG already exists on another commit."
               exit 1
