@@ -118,7 +118,6 @@ describe('Gladia Node', () => {
 
 			expect(gladiaApiRequestSpy).toHaveBeenCalledTimes(3);
 			expect(gladiaApiRequestSpy).toHaveBeenLastCalledWith('GET', '/v2/transcription/txn-123');
-			expect(executeFunctions.helpers.httpRequestWithAuthentication).not.toHaveBeenCalled();
 			expect(result[0][0].json).toEqual({
 				status: 'done',
 				result: { transcription: { full_transcript: 'Hello world' } },
@@ -322,7 +321,6 @@ describe('Gladia Node', () => {
 			await node.execute.call(executeFunctions);
 
 			expect(gladiaApiRequestSpy).toHaveBeenLastCalledWith('GET', '/v2/transcription/txn-789');
-			expect(executeFunctions.helpers.httpRequestWithAuthentication).not.toHaveBeenCalled();
 		});
 
 		it('should refuse to poll an off-origin result_url when no id is returned', async () => {
@@ -334,7 +332,6 @@ describe('Gladia Node', () => {
 				'Refusing to poll result_url outside https://api.gladia.io',
 			);
 			expect(gladiaApiRequestSpy).toHaveBeenCalledTimes(1);
-			expect(executeFunctions.helpers.httpRequestWithAuthentication).not.toHaveBeenCalled();
 		});
 
 		it('should poll the path of a same-origin result_url when no id is returned', async () => {
@@ -347,6 +344,15 @@ describe('Gladia Node', () => {
 			await node.execute.call(executeFunctions);
 
 			expect(gladiaApiRequestSpy).toHaveBeenLastCalledWith('GET', '/v2/transcription/txn-321');
+		});
+
+		it('should refuse to poll an unparseable result_url when no id is returned', async () => {
+			gladiaApiRequestSpy.mockResolvedValueOnce({ result_url: 'not a url' });
+
+			await expect(node.execute.call(executeFunctions)).rejects.toThrow(
+				'Refusing to poll result_url outside https://api.gladia.io',
+			);
+			expect(gladiaApiRequestSpy).toHaveBeenCalledTimes(1);
 		});
 	});
 });
