@@ -1,6 +1,5 @@
 import type {
 	IExecuteFunctions,
-	IHttpRequestOptions,
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
@@ -8,7 +7,7 @@ import type {
 } from 'n8n-workflow';
 import { NodeApiError, NodeConnectionTypes, NodeOperationError, sleep } from 'n8n-workflow';
 
-import { gladiaApiRequest, gladiaApiUpload } from './GenericFunctions';
+import { BASE_URL, gladiaApiRequest, gladiaApiUpload } from './GenericFunctions';
 
 export class Gladia implements INodeType {
 	description: INodeTypeDescription = {
@@ -453,7 +452,26 @@ export class Gladia implements INodeType {
 						);
 					}
 
-					const pollEndpoint = resultUrl ? undefined : `/v2/transcription/${transcriptionId}`;
+					// Poll through gladiaApiRequest so the API key is only ever sent to BASE_URL.
+					let pollEndpoint: string;
+					if (transcriptionId) {
+						pollEndpoint = `/v2/transcription/${encodeURIComponent(transcriptionId)}`;
+					} else {
+						let parsedResultUrl: URL | undefined;
+						try {
+							parsedResultUrl = new URL(resultUrl as string);
+						} catch {
+							parsedResultUrl = undefined;
+						}
+						if (!parsedResultUrl || parsedResultUrl.origin !== new URL(BASE_URL).origin) {
+							throw new NodeOperationError(
+								this.getNode(),
+								`Refusing to poll result_url outside ${BASE_URL}`,
+								{ itemIndex: i },
+							);
+						}
+						pollEndpoint = `${parsedResultUrl.pathname}${parsedResultUrl.search}`;
+					}
 
 					const pollingInterval = (options.pollingInterval ?? 5) * 1000;
 					const pollingTimeout = (options.pollingTimeout ?? 600) * 1000;
@@ -464,22 +482,7 @@ export class Gladia implements INodeType {
 					while (Date.now() - startTime < pollingTimeout) {
 						await sleep(pollingInterval);
 
-						let pollResponse: JsonObject;
-
-						if (resultUrl) {
-							const requestOptions: IHttpRequestOptions = {
-								method: 'GET',
-								url: resultUrl,
-								json: true,
-							};
-							pollResponse = (await this.helpers.httpRequestWithAuthentication.call(
-								this,
-								'gladiaApi',
-								requestOptions,
-							)) as JsonObject;
-						} else {
-							pollResponse = await gladiaApiRequest.call(this, 'GET', pollEndpoint as string);
-						}
+						const pollResponse = await gladiaApiRequest.call(this, 'GET', pollEndpoint);
 
 						const status = pollResponse.status as string;
 

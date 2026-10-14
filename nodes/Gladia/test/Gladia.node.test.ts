@@ -103,12 +103,11 @@ describe('Gladia Node', () => {
 				return params[param];
 			}) as () => NodeParameterValueType);
 
-			gladiaApiRequestSpy.mockResolvedValueOnce({
-				id: 'txn-123',
-				result_url: 'https://api.gladia.io/v2/transcription/txn-123',
-			});
-
-			executeFunctions.helpers.httpRequestWithAuthentication
+			gladiaApiRequestSpy
+				.mockResolvedValueOnce({
+					id: 'txn-123',
+					result_url: 'https://api.gladia.io/v2/transcription/txn-123',
+				})
 				.mockResolvedValueOnce({ status: 'processing' })
 				.mockResolvedValueOnce({
 					status: 'done',
@@ -117,8 +116,9 @@ describe('Gladia Node', () => {
 
 			const result = await node.execute.call(executeFunctions);
 
-			expect(gladiaApiRequestSpy).toHaveBeenCalledTimes(1);
-			expect(executeFunctions.helpers.httpRequestWithAuthentication).toHaveBeenCalledTimes(2);
+			expect(gladiaApiRequestSpy).toHaveBeenCalledTimes(3);
+			expect(gladiaApiRequestSpy).toHaveBeenLastCalledWith('GET', '/v2/transcription/txn-123');
+			expect(executeFunctions.helpers.httpRequestWithAuthentication).not.toHaveBeenCalled();
 			expect(result[0][0].json).toEqual({
 				status: 'done',
 				result: { transcription: { full_transcript: 'Hello world' } },
@@ -138,15 +138,15 @@ describe('Gladia Node', () => {
 				return params[param];
 			}) as () => NodeParameterValueType);
 
-			gladiaApiRequestSpy.mockResolvedValueOnce({
-				id: 'txn-err',
-				result_url: 'https://api.gladia.io/v2/transcription/txn-err',
-			});
-
-			executeFunctions.helpers.httpRequestWithAuthentication.mockResolvedValueOnce({
-				status: 'error',
-				error_message: 'Invalid audio format',
-			});
+			gladiaApiRequestSpy
+				.mockResolvedValueOnce({
+					id: 'txn-err',
+					result_url: 'https://api.gladia.io/v2/transcription/txn-err',
+				})
+				.mockResolvedValueOnce({
+					status: 'error',
+					error_message: 'Invalid audio format',
+				});
 
 			await expect(node.execute.call(executeFunctions)).rejects.toThrow('Transcription failed');
 		});
@@ -293,6 +293,60 @@ describe('Gladia Node', () => {
 			expect(gladiaApiRequestSpy).toHaveBeenCalledTimes(2);
 			expect(gladiaApiRequestSpy).toHaveBeenLastCalledWith('GET', '/v2/transcription/txn-456');
 			expect((result[0][0].json as Record<string, unknown>).status).toBe('done');
+		});
+	});
+
+	describe('result_url origin check', () => {
+		beforeEach(() => {
+			executeFunctions.getNodeParameter.mockImplementation(((param: string) => {
+				const params: Record<string, unknown> = {
+					resource: 'transcription',
+					operation: 'transcribe',
+					audioSource: 'url',
+					audioUrl: 'http://files.gladia.io/example/audio-transcription/split_infinity.wav',
+					waitForCompletion: true,
+					options: { pollingInterval: 1, pollingTimeout: 30 },
+				};
+				return params[param];
+			}) as () => NodeParameterValueType);
+		});
+
+		it('should poll by id and ignore an off-origin result_url', async () => {
+			gladiaApiRequestSpy
+				.mockResolvedValueOnce({
+					id: 'txn-789',
+					result_url: 'https://attacker.example/collect',
+				})
+				.mockResolvedValueOnce({ status: 'done' });
+
+			await node.execute.call(executeFunctions);
+
+			expect(gladiaApiRequestSpy).toHaveBeenLastCalledWith('GET', '/v2/transcription/txn-789');
+			expect(executeFunctions.helpers.httpRequestWithAuthentication).not.toHaveBeenCalled();
+		});
+
+		it('should refuse to poll an off-origin result_url when no id is returned', async () => {
+			gladiaApiRequestSpy.mockResolvedValueOnce({
+				result_url: 'https://attacker.example/collect',
+			});
+
+			await expect(node.execute.call(executeFunctions)).rejects.toThrow(
+				'Refusing to poll result_url outside https://api.gladia.io',
+			);
+			expect(gladiaApiRequestSpy).toHaveBeenCalledTimes(1);
+			expect(executeFunctions.helpers.httpRequestWithAuthentication).not.toHaveBeenCalled();
+		});
+
+		it('should poll the path of a same-origin result_url when no id is returned', async () => {
+			gladiaApiRequestSpy
+				.mockResolvedValueOnce({
+					result_url: 'https://api.gladia.io/v2/transcription/txn-321',
+				})
+				.mockResolvedValueOnce({ status: 'done' });
+
+			await node.execute.call(executeFunctions);
+
+			expect(gladiaApiRequestSpy).toHaveBeenLastCalledWith('GET', '/v2/transcription/txn-321');
 		});
 	});
 });

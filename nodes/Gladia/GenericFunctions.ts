@@ -7,7 +7,7 @@ import type {
 import { NodeApiError } from 'n8n-workflow';
 import { version as packageVersion } from '../../package.json';
 
-const BASE_URL = 'https://api.gladia.io';
+export const BASE_URL = 'https://api.gladia.io';
 
 export async function gladiaApiRequest(
 	this: IExecuteFunctions,
@@ -20,6 +20,7 @@ export async function gladiaApiRequest(
 		method,
 		url: `${BASE_URL}${endpoint}`,
 		json: true,
+		disableFollowRedirect: true,
 		headers: { 'x-gladia-version': `n8n-nodes/${packageVersion}`, ...headers },
 	};
 
@@ -60,6 +61,7 @@ export async function gladiaApiUpload(
 		method: 'POST',
 		url: `${BASE_URL}/v2/upload`,
 		body: form,
+		disableFollowRedirect: true,
 		headers: { 'x-gladia-version': `n8n-nodes/${packageVersion}` },
 	};
 
